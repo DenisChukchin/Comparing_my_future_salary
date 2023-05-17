@@ -27,6 +27,6 @@ Use command:
 % python3 main.py  
 ```
 Output:
-image.png
+<img width="594" alt="image" src="https://github.com/DenisChukchin/Comparing_my_future_salary/assets/125466667/4069f6f9-d948-4cd1-8275-a00e38fe48f7">
 ## Project goals.
 *The program was designed by a student from online web development courses for educational purposes [Devman](https://dvmn.org).*
