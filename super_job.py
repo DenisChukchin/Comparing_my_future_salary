@@ -1,6 +1,5 @@
 import requests
 import os
-from dotenv import load_dotenv
 
 from get_salary_function import get_salary
 from create_table_function import create_table
@@ -72,7 +71,6 @@ def get_sj_languages_statistic(languages, token):
 
 
 def get_sj_table():
-    load_dotenv()
     token = os.getenv('SJ_TOKEN')
     languages = [
         "JavaScript", "Java", "Python", "Ruby", "PHP",

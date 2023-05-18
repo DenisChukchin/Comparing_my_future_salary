@@ -1,4 +1,5 @@
 import requests
+from dotenv import load_dotenv
 
 from get_salary_function import get_salary
 from create_table_function import create_table
@@ -71,6 +72,7 @@ def get_hh_languages_statistic(languages, period):
 
 
 def main():
+    load_dotenv()
     languages = [
         "JavaScript", "Java", "Python", "Ruby", "PHP",
         "С++", "CSS", "C#", "C", "GO"
