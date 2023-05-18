@@ -1,8 +1,6 @@
 import requests
-import os
 
 from get_salary_function import get_salary
-from create_table_function import create_table
 
 
 def get_sj_vacancies(language, token, page):
@@ -68,17 +66,3 @@ def get_sj_languages_statistic(languages, token):
         vacancies = get_total_sj_vacancies(language, token)
         stats[language] = get_sj_vacancy_statistic(vacancies)
     return stats
-
-
-def get_sj_table():
-    token = os.getenv('SJ_TOKEN')
-    languages = [
-        "JavaScript", "Java", "Python", "Ruby", "PHP",
-        "С++", "CSS", "C#", "C", "GO"
-    ]
-    sj_languages_statistic = get_sj_languages_statistic(languages, token)
-    print(create_table(sj_languages_statistic))
-
-
-if __name__ == '__main__':
-    get_sj_table()

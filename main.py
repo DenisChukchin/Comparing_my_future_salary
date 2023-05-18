@@ -1,9 +1,10 @@
+import os
 import requests
 from dotenv import load_dotenv
 
 from get_salary_function import get_salary
 from create_table_function import create_table
-from super_job import get_sj_table
+from super_job import get_sj_languages_statistic
 
 
 def find_hh_vacancies(language, period, page):
@@ -73,14 +74,16 @@ def get_hh_languages_statistic(languages, period):
 
 def main():
     load_dotenv()
+    token = os.getenv('SJ_TOKEN')
     languages = [
         "JavaScript", "Java", "Python", "Ruby", "PHP",
         "С++", "CSS", "C#", "C", "GO"
     ]
     period = 1
     hh_languages_statistic = get_hh_languages_statistic(languages, period)
+    sj_languages_statistic = get_sj_languages_statistic(languages, token)
     print(create_table(hh_languages_statistic))
-    get_sj_table()
+    print(create_table(sj_languages_statistic))
 
 
 if __name__ == '__main__':
