@@ -1,7 +1,9 @@
 import requests
 import os
 from dotenv import load_dotenv
-from terminaltables import SingleTable
+
+from get_salary_function import get_salary
+from create_table_function import create_table
 
 
 def get_sj_vacancies(language, token, page):
@@ -32,16 +34,6 @@ def get_total_sj_vacancies(language, token):
     return len(language_vacancies), language_vacancies
 
 
-def get_salary(salary_from, salary_to):
-    if salary_from and salary_to:
-        average_salary = int((salary_from + salary_to) / 2)
-    elif salary_from and not salary_to:
-        average_salary = int(salary_from * 1.2)
-    else:
-        average_salary = int(salary_to * 0.8)
-    return average_salary
-
-
 def predict_sj_rub_salary(vacancy):
     if vacancy['currency'] == 'rub':
         salary_from = vacancy['payment_from']
@@ -51,16 +43,24 @@ def predict_sj_rub_salary(vacancy):
 
 
 def get_sj_vacancy_statistic(vacancies):
-    if vacancies[1]:
-        salaries = []
-        for vacancy in vacancies[1]:
-            if predict_sj_rub_salary(vacancy) != 0:
-                salaries.append(predict_sj_rub_salary(vacancy))
+    vacancies_found, language_vacancies = vacancies
+    salaries = []
+    for vacancy in language_vacancies:
+        salary = predict_sj_rub_salary(vacancy)
+        if salary != 0:
+            salaries.append(salary)
+    try:
         average_salary = int(sum(salaries) / len(salaries))
-        vacancy_statistic = {"vacancies_found": vacancies[0],
+        vacancy_statistic = {"vacancies_found": vacancies_found,
                              "vacancies_processed": len(salaries),
                              "average_salary": average_salary}
         return vacancy_statistic
+    except ZeroDivisionError:
+        return {
+            "vacancies_found": vacancies_found,
+            "vacancies_processed": 'ЗП не указаны',
+            "average_salary": 'Не могу посчитать'
+        }
 
 
 def get_sj_languages_statistic(languages, token):
@@ -71,34 +71,16 @@ def get_sj_languages_statistic(languages, token):
     return stats
 
 
-def create_sj_table(table_data_sj):
-    table_data = [
-        ['Язык программирования', 'Вакансий найдено',
-         'Вакансий обработано', 'Средняя зарплата'],
-    ]
-    for language, stats in table_data_sj.items():
-        specifics = [language, stats['vacancies_found'],
-                     stats['vacancies_processed'], stats['average_salary']]
-        table_data.append(specifics)
-    title = 'SuperJob Moscow'
-    table_instance = SingleTable(table_data, title)
-    table_instance.justify_columns[0] = 'center'
-    table_instance.justify_columns[1] = 'center'
-    table_instance.justify_columns[2] = 'center'
-    table_instance.justify_columns[3] = 'center'
-    return table_instance.table
-
-
-def main2():
+def get_sj_table():
     load_dotenv()
     token = os.getenv('SJ_TOKEN')
     languages = [
         "JavaScript", "Java", "Python", "Ruby", "PHP",
         "С++", "CSS", "C#", "C", "GO"
     ]
-    table_data_sj = get_sj_languages_statistic(languages, token)
-    print(create_sj_table(table_data_sj))
+    sj_languages_statistic = get_sj_languages_statistic(languages, token)
+    print(create_table(sj_languages_statistic))
 
 
 if __name__ == '__main__':
-    main2()
+    get_sj_table()
