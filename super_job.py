@@ -47,7 +47,7 @@ def get_sj_vacancy_statistic(vacancies):
     salaries = []
     for vacancy in language_vacancies:
         salary = predict_sj_rub_salary(vacancy)
-        if salary != 0:
+        if salary:
             salaries.append(salary)
     try:
         average_salary = int(sum(salaries) / len(salaries))
